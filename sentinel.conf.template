@@ -165,6 +165,7 @@ sentinel failover-timeout mymaster 180000
 #
 # A script has a maximum running time of 60 seconds. After this limit is
 # reached the script is terminated with a SIGKILL and the execution retried.
+sentinel notification-script mymaster /home/yushi/redis-sandboxes/redis-sentinel-scripts/notify.sh
 
 # NOTIFICATION SCRIPT
 #

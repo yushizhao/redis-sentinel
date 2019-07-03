@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
 msg="{\"msgtype\": \"text\", 
         \"text\": {
              \"content\": \"${1} ${2}\"

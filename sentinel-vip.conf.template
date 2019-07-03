@@ -1,0 +1,9 @@
+port STPORTPLACEHOLDER
+requirepass STPASSPLACEHOLDER
+sentinel monitor MONITORPLACEHOLDER
+sentinel auth-pass AUTHPASSPLACEHOLDER
+sentinel down-after-milliseconds mymaster 3000
+sentinel parallel-syncs mymaster 1
+sentinel failover-timeout mymaster 60000
+sentinel notification-script mymaster ./notify.sh
+sentinel client-reconfig-script mymaster ./failover.sh

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+MASTER_IP=${6}
+MY_IP=BINDPLACEHOLDER   # 每个Server本身的IP
+VIP=‘127.0.0.4‘     # VIP
+NETMASK=‘8‘          # Netmask
+INTERFACE=lo      # 接口
+
+if [ ${MASTER_IP} = ${MY_IP} ]; then
+        sudo /sbin/ip addr add ${VIP}/${NETMASK} dev ${INTERFACE}
+        sudo /sbin/arping -q -c 3 -A ${VIP} -I ${INTERFACE}
+        exit 0
+else
+        sudo /sbin/ip addr del ${VIP}/${NETMASK} dev ${INTERFACE}
+        exit 0
+fi
+exit 1

@@ -1,58 +1,37 @@
-BIND1=127.0.0.1
-BIND2=127.0.0.2
-BIND3=127.0.0.3
-
-PORT1=6379
-PORT2=6380
-PORT3=6381
-
-MONITOR="127.0.0.1 6379 2"
+SVPORT=6379
+MASTERIP=172.16.212.121
+STPORT=26379
 
 SVPASS=123
 STPASS=12345678
 
-rm -rf ../${PORT1}
-rm -rf ../${PORT2}
-rm -rf ../${PORT3}
+MONITOR='mymaster '"${MASTERIP}"' '"${SVPORT}"' 2'
+AUTHPASS='mymaster '"${SVPASS}"
 
-mkdir ../${PORT1}
-mkdir ../${PORT2}
-mkdir ../${PORT3}
+rm -rf ../master
+rm -rf ../slave
+rm -rf ../sentinel
 
-cp redis.conf.template ../${PORT1}/redis.conf
-sed -i 's/BINDPLACEHOLDER/'"${BIND1}"'/g' ../${PORT1}/redis.conf
-sed -i 's/SELFPORTPLACEHOLDER/'"${PORT1}"'/g' ../${PORT1}/redis.conf
-sed -i 's/SVPASSPLACEHOLDER/'"${SVPASS}"'/g' ../${PORT1}/redis.conf
-sed -i 's/MASTERPASSPLACEHOLDER/'"${SVPASS}"'/g' ../${PORT1}/redis.conf
+mkdir ../master
+mkdir ../slave
+mkdir ../sentinel
 
-cp redis.conf.template ../${PORT2}/redis.conf
-sed -i 's/BINDPLACEHOLDER/'"${BIND2}"'/g' ../${PORT2}/redis.conf
-sed -i 's/SELFPORTPLACEHOLDER/'"${PORT2}"'/g' ../${PORT2}/redis.conf
-sed -i 's/SVPASSPLACEHOLDER/'"${SVPASS}"'/g' ../${PORT2}/redis.conf
-sed -i 's/MASTERPASSPLACEHOLDER/'"${SVPASS}"'/g' ../${PORT2}/redis.conf
-echo 'replicaof '"${BIND1}"' '"${PORT1}" >> ../${PORT2}/redis.conf
+cp redis-vip.conf.template ../master/redis.conf
+sed -i 's/SVPORTPLACEHOLDER/'"${SVPORT}"'/g' ../master/redis.conf
+sed -i 's/SVPASSPLACEHOLDER/'"${SVPASS}"'/g' ../master/redis.conf
+sed -i 's/MASTERPASSPLACEHOLDER/'"${SVPASS}"'/g' ../master/redis.conf
 
-cp redis.conf.template ../${PORT3}/redis.conf
-sed -i 's/BINDPLACEHOLDER/'"${BIND3}"'/g' ../${PORT3}/redis.conf
-sed -i 's/SELFPORTPLACEHOLDER/'"${PORT3}"'/g' ../${PORT3}/redis.conf
-sed -i 's/SVPASSPLACEHOLDER/'"${SVPASS}"'/g' ../${PORT3}/redis.conf
-sed -i 's/MASTERPASSPLACEHOLDER/'"${SVPASS}"'/g' ../${PORT3}/redis.conf
-echo 'replicaof '"${BIND1}"' '"${PORT1}" >> ../${PORT3}/redis.conf
+cp redis-vip.conf.template ../slave/redis.conf
+sed -i 's/SVPORTPLACEHOLDER/'"${SVPORT}"'/g' ../slave/redis.conf
+sed -i 's/SVPASSPLACEHOLDER/'"${SVPASS}"'/g' ../slave/redis.conf
+sed -i 's/MASTERPASSPLACEHOLDER/'"${SVPASS}"'/g' ../slave/redis.conf
+echo 'replicaof '"${MASTERIP}"' '"${SVPORT}" >> ../slave/redis.conf
 
-cp sentinel.conf.template ../${PORT1}/sentinel.conf
-sed -i 's/PORTPLACEHOLDER/2'"${PORT1}"'/g' ../${PORT1}/sentinel.conf
-sed -i 's/MONITORPLACEHOLDER/'"${MONITOR}"'/g' ../${PORT1}/sentinel.conf
-sed -i 's/MASTERPASSPLACEHOLDER/'"${SVPASS}"'/g' ../${PORT1}/sentinel.conf
-echo 'requirepass '"${STPASS}"'' >> ../${PORT1}/sentinel.conf
+cp sentinel-vip.conf.template ../sentinel/sentinel.conf
+sed -i 's/STPORTPLACEHOLDER/'"${STPORT}"'/g' ../sentinel/sentinel.conf
+sed -i 's/STPASSPLACEHOLDER/'"${STPASS}"'/g' ../sentinel/sentinel.conf
+sed -i 's/MONITORPLACEHOLDER/'"${MONITOR}"'/g' ../sentinel/sentinel.conf
+sed -i 's/AUTHPASSPLACEHOLDER/'"${AUTHPASS}"'/g' ../sentinel/sentinel.conf
 
-cp sentinel.conf.template ../${PORT2}/sentinel.conf
-sed -i 's/PORTPLACEHOLDER/2'"${PORT2}"'/g' ../${PORT2}/sentinel.conf
-sed -i 's/MONITORPLACEHOLDER/'"${MONITOR}"'/g' ../${PORT2}/sentinel.conf
-sed -i 's/MASTERPASSPLACEHOLDER/'"${SVPASS}"'/g' ../${PORT2}/sentinel.conf
-echo 'requirepass '"${STPASS}"'' >> ../${PORT2}/sentinel.conf
-
-cp sentinel.conf.template ../${PORT3}/sentinel.conf
-sed -i 's/PORTPLACEHOLDER/2'"${PORT3}"'/g' ../${PORT3}/sentinel.conf
-sed -i 's/MONITORPLACEHOLDER/'"${MONITOR}"'/g' ../${PORT3}/sentinel.conf
-sed -i 's/MASTERPASSPLACEHOLDER/'"${SVPASS}"'/g' ../${PORT3}/sentinel.conf
-echo 'requirepass '"${STPASS}"'' >> ../${PORT3}/sentinel.conf
+cp notify.sh ../sentinel/notify.sh
+cp failover.sh ../sentinel/failover.sh

@@ -9,13 +9,13 @@ NETMASK='24'          # Netmask
 INTERFACE='ens160'      # インターフェイス
 
 if [ ${MASTER_IP} = ${MY_IP} ]; then
-        sudo /sbin/ip addr add ${VIP}/${NETMASK} dev ${INTERFACE}
-        sudo /sbin/arping -q -c 3 -A ${VIP} -I ${INTERFACE}
-        sudo /sbin/ip addr del ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}
+  sudo /sbin/ip addr add ${VIP}/${NETMASK} dev ${INTERFACE}
+  sudo /sbin/arping -q -c 3 -A ${VIP} -I ${INTERFACE}
+  sudo /sbin/ip addr del ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}
 else
-        sudo /sbin/ip addr del ${VIP}/${NETMASK} dev ${INTERFACE}
+  sudo /sbin/ip addr del ${VIP}/${NETMASK} dev ${INTERFACE}
+  sudo /sbin/ip addr add ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}
+  if [ ${OLD_IP} != ${MY_IP} ]; then
+    sudo /sbin/arping -q -c 3 -A ${SLAVEVIP} -I ${INTERFACE}
+  fi
 fi
-
-if [ ${OLD_IP} != ${MY_IP} ] && [ ${MASTER_IP} != ${MY_IP} ]; then
-        sudo /sbin/ip addr add ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}
-        sudo /sbin/arping -q -c 3 -A ${SLAVEVIP} -I ${INTERFACE}

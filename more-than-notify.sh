@@ -1,5 +1,6 @@
 #!/bin/bash
 SELFIP=
+VIP='172.16.212.124'
 SLAVEVIP=
 NETMASK='24'    
 INTERFACE='ens160'
@@ -14,7 +15,7 @@ if [ ${1} == "+sdown" ]; then
     if [ ${ip} == ${SELFIP} ]; then
       sudo /sbin/ip addr del ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}
     else
-      # sudo /sbin/ip addr add ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}
+      sudo /sbin/ip addr add ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}
       sudo /sbin/arping -q -c 3 -A ${SLAVEVIP} -I ${INTERFACE}
     fi
   fi
@@ -26,10 +27,9 @@ if [ ${1} == "-sdown" ]; then
   ip=${array[2]}
   masterip=${array[6]}
 
-  if [ ${role} == "slave" ] && [ ${masterip} != ${SELFIP} ]; then
-    if [ ${ip} == ${SELFIP} ]; then
-      sudo /sbin/ip addr add ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}
-    fi
+  if [ ${role} == "slave" ] && [ ${ip} == ${SELFIP} ]; then
+    sudo /sbin/ip addr del ${VIP}/${NETMASK} dev ${INTERFACE}
+    sudo /sbin/ip addr del ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}
   fi
 fi
 

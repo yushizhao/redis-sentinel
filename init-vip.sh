@@ -1,5 +1,5 @@
 SVPORT=6379
-MASTERIP=172.16.212.121
+MASTERIP=10.118.11.11
 STPORT=26379
 
 SVPASS=123
@@ -33,5 +33,5 @@ sed -i 's/STPASSPLACEHOLDER/'"${STPASS}"'/g' ../sentinel/sentinel.conf
 sed -i 's/MONITORPLACEHOLDER/'"${MONITOR}"'/g' ../sentinel/sentinel.conf
 sed -i 's/AUTHPASSPLACEHOLDER/'"${AUTHPASS}"'/g' ../sentinel/sentinel.conf
 
-cp notify.sh ../sentinel/notify.sh
+cp more-than-notify.sh ../sentinel/notify.sh
 cp failover.sh ../sentinel/failover.sh

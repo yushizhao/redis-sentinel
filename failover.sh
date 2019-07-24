@@ -13,7 +13,7 @@ if [ ${OLD_IP} == ${MY_IP} ]; then
   sudo /sbin/ip addr del ${VIP}/${NETMASK} dev ${INTERFACE}
 fi
 
-if [ ${MASTER_IP} = ${MY_IP} ]; then
+if [ ${MASTER_IP} == ${MY_IP} ]; then
   sudo /sbin/ip addr add ${VIP}/${NETMASK} dev ${INTERFACE}
   sudo /sbin/arping -q -c 3 -A ${VIP} -I ${INTERFACE}
   sudo /sbin/ip addr del ${SLAVEVIP}/${NETMASK} dev ${INTERFACE}

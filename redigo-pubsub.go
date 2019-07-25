@@ -39,7 +39,7 @@ func main() {
 			fmt.Println(err)
 		}
 		for {
-			switch v := psc.Receive().(type) {
+			switch v := psc.ReceiveWithTimeout(5 * time.Second).(type) {
 			case redis.Message:
 				fmt.Println(string(v.Data))
 			case redis.Subscription:

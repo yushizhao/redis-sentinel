@@ -4,3 +4,4 @@ redis-sentinel-scripts
 redigo-pub
 redigo-sub
 test.ipynb
+redigo-pubsub
